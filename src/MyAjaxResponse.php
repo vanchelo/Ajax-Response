@@ -9,7 +9,7 @@ use Vanchelo\AjaxResponse\Response as AjaxResponse;
 class MyAjaxResponse extends AjaxResponse
 {
     /**
-     * Для еще большего удобвства
+     * Для еще большего удобства
      * $response->todo(['id' => 10, 'title' => 'Какая-то важная задача']);
      * $response->todos(
      *      ['id' => 10, 'title' => 'Какая-то важная задача'],
