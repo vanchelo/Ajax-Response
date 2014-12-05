@@ -1,0 +1,22 @@
+{
+  "name": "vanchelo/ajax-response",
+  "type": "library",
+  "description": "Laravel Ajax Response",
+  "keywords": ["laravel","response","ajax"],
+  "homepage": "https://github.com/vanchelo/Ajax-Response",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Brezhnev Ivan"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "laravel/support": "4.2.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vanchelo\\AjaxResponse\\": "src/"
+    }
+  }
+}
