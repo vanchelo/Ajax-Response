@@ -3,6 +3,85 @@ Ajax Response
 
 Laravel Ajax Response
 
+#Для чего это нужно?
+А нужно это для того, чтобы гарантированно возвращать один формат ответов на AJAX запросы во всём приложении.
+
+Обычно мы пишем что-то в таком духе (вы может быть так не пишете, а я раньше писал именно так):
+```
+TodosController
+{
+    public function index()
+    {
+        $todos = Todo::all():
+         
+        return [
+            'success' => true,
+            'error' => false,
+            'message' => sprintf('Получено %s задач', $todos->count()),
+            'todos' => $todos->toArray()
+        ];
+    }
+    
+    public function show($id)
+    {
+        $todo = Todo::find($id):
+        
+        if ( ! $todo)
+        {
+            return [
+                'success' => false,
+                'error' => true,
+                'message' => sprintf('Задача с ID "%s" не найдена', $id),
+            ]; 
+        }
+         
+        return [
+            'success' => true,
+            'error' => false,
+            'message' => 'Задача успешно получена',
+            'todo' => $todo->toArray()
+        ];
+    }
+}
+```
+Какой основной минус в таком подходе?
+1-й. Приходится формировать массив для ответа копируя код из метода в метод.
+2-й. И самый большой! Помнить формат массива и следить за его целостностью во всем приложении!
+
+Другое дело заранее подготовить ответ, и возвращать его всегда в одном формате, не думаю каждый раз какие ключи должны в нем присутствовать.
+
+```
+TodosController
+{
+    public function index()
+    {
+        $todos = Todo::all():
+         
+        return app('app.response')
+            ->message(sprintf('Получено %s задач', $todos->count()))
+            ->data(['todos' => $todos->toArray()]);
+    }
+    
+    public function show($id)
+    {
+        $todo = Todo::find($id):
+        
+        if ( ! $todo)
+        {
+            return app('app.response')
+                ->error('Задача с ID "%s" не найдена', $id);
+        }
+         
+        return app('app.response')
+            ->message('Задача успешно получена')
+            ->data(['todo' => $todo->toArray()]);
+    }
+}
+```
+Здесь мы имеем один заранее подготовленный ответ на всё приложение.
+
+Ниже я приведу более развернутые примеры как этим пользоваться.
+
 ##Установка
 Подключаем пакет через composer:
 ```
@@ -39,7 +118,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 Использование `singleton` гарантирует один экзепляр класса на всё приложение, используйте данный подход на своё усмотрение.
-Использование `bind` "связывает" класс `Vanchelo\AjaxResponse\Response` c `app.response` чтобы в дальнейшем нам было удобно к нему обращаться.
+Использование `bind` "связывает" класс `Vanchelo\AjaxResponse\Response` c `app.response` (абстрактный сервис, реализацию которого всегда можно заменить на свою, ) в **IoC-контейнере** чтобы в дальнейшем нам было удобно к нему обращаться.
 Ниже примеду пример контроллера с разным подходом.
 
 ##Краткий How To. Или как это всё готовить.
@@ -99,7 +178,7 @@ class TodosController extends BaseController
 }
 ```
 Если всё хорошо:
-```json
+```js
 {
     'success': true,
     'error': false,
@@ -163,7 +242,7 @@ class TodosController extends BaseAjaxController
 ```
 
 В данном случае, если не было получено ни одной задачи возвращаем сообщение об ошибке и статусы:
-```json
+```js
 {
     'success': false,
     'error': true,
@@ -171,11 +250,48 @@ class TodosController extends BaseAjaxController
 }
 ```
 Если всё хорошо:
-```json
+```js
 {
     'success': true,
     'error': false,
     'message': 'Получено 11 задач',
     'todos': [...] // здесь массив полученных задач
+}
+```
+
+Вы конечно же можете по аналогии создать свой класс, или даже реализовать магические методы для еще большего удобства:
+```php
+<?php
+
+use Vanchelo\AjaxResponse\Response as AjaxResponse;
+
+class MyAjaxResponse extends AjaxResponse
+{
+    function __call($name, $arguments)
+    {
+        if (count($arguments) == 1)
+        {
+            $this->data[$name] = $arguments[0];
+        }
+        else if (count($arguments) > 1)
+        {
+            $this->data[$name] = $arguments;
+        }
+
+        return $this;
+    }
+}
+```
+И тогда вместо `response->data(['todo' => $todo])` можно смело писать
+```php
+$response->todo($todos);
+```
+На выходе получим всё тот же готовый ответ
+```js
+{
+    'success': true,
+    'error': false,
+    'message': '',
+    'todo': { ... }
 }
 ```
