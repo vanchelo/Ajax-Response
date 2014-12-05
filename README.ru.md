@@ -284,9 +284,9 @@ class MyAjaxResponse extends AjaxResponse
     }
 }
 ```
-И тогда вместо `response->data(['todo' => $todo])` можно смело писать
+И тогда вместо `$response->data(['todo' => $todo])` можно смело писать
 ```php
-$response->todo($todos);
+$response->todo($todo);
 ```
 На выходе получим всё тот же готовый ответ
 ```js
