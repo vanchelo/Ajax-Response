@@ -123,6 +123,6 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
      */
     function __toString()
     {
-        return $this->toJson(JSON_UNESCAPED_UNICODE);
+        return $this->toJson();
     }
 }
