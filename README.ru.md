@@ -3,22 +3,20 @@ Ajax Response
 
 Laravel Ajax Response
 
-[Описание на русском](https://github.com/vanchelo/Ajax-Response/blob/master/README.ru.md)
-
 ##Установка
+Подключаем пакет через composer:
+```
+composer require "vanchelo/ajax-response dev-master"
+```
 
 ##Использование
-В сервис провайдере вашего приложения в метод `register` добавьте след. код:
+В сервис провайдере вашего приложения в метод `register` добавьте следующий код:
 ```
 $this->app->singleton('Vanchelo\AjaxResponse\Response');
 $this->app->bind('app.response', 'Vanchelo\AjaxResponse\Response', true);
 ```
 
 В качестве примера, привожу вот такой сервис провайдер.
-
-Использование `singleton` гарантирует один экзепляр класса на всё приложение, используйте данный подход на своё усмотрение.
-Использование `bind` "связывает" класс `Vanchelo\AjaxResponse\Response` c `app.response` чтобы в дальнейшем нам было удобно к нему обращаться.
-Ниже примеду пример контроллера с разным подходом.
 
 ```php
 <?php namespace App;
@@ -40,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
     }
 }
 ```
+Использование `singleton` гарантирует один экзепляр класса на всё приложение, используйте данный подход на своё усмотрение.
+Использование `bind` "связывает" класс `Vanchelo\AjaxResponse\Response` c `app.response` чтобы в дальнейшем нам было удобно к нему обращаться.
+Ниже примеду пример контроллера с разным подходом.
 
 ##Краткий How To. Или как это всё готовить.
 
