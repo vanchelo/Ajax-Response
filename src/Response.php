@@ -13,14 +13,13 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
 
     /**
      * @param string $message
-     * @param bool $success
-     * @param array $data
+     * @param bool   $success
+     * @param array  $data
      */
     function __construct($message = '', $success = true, array $data = [])
     {
         $this->data = $data;
         $this->success = $success;
-        $this->error = ! $success;
         $this->message = $message;
     }
 
@@ -34,7 +33,6 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
     public function error($message)
     {
         $this->success = false;
-        $this->error = true;
         $this->message($message);
 
         return $this;
@@ -49,6 +47,7 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
      */
     public function errors($errors)
     {
+        $this->success = false;
         $this->data['errors'] = $errors instanceof MessageBag
             ? $errors->toArray()
             : $errors;
@@ -101,7 +100,7 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
     {
         return [
             'success' => $this->success,
-            'error'   => $this->error,
+            'error'   => ! $this->success,
             'message' => $this->message
         ] + $this->data;
     }
