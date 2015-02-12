@@ -30,7 +30,7 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
      *
      * @return self
      */
-    public function error($message)
+    public function error($message = '')
     {
         $this->success = false;
         $this->message($message);
@@ -73,12 +73,20 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
      * Set response data
      *
      * @param array $data
+     * @param bool $merge
      *
      * @return self
      */
-    public function data(array $data)
+    public function data(array $data, $merge = false)
     {
-        $this->data = $data;
+        if ($merge)
+        {
+            $this->data = array_merge($this->data, $data);
+        }
+        else
+        {
+            $this->data += $data;
+        }
 
         return $this;
     }
