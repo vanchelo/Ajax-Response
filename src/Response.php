@@ -1,11 +1,11 @@
 <?php namespace Vanchelo\AjaxResponse;
 
 use JsonSerializable;
-use Illuminate\Support\MessageBag;
-use Illuminate\Support\Contracts\ArrayableInterface;
-use Illuminate\Support\Contracts\JsonableInterface;
+use Illuminate\Contracts\Support\MessageBag;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 
-class Response implements JsonSerializable, ArrayableInterface, JsonableInterface
+class Response implements JsonSerializable, Arrayable, Jsonable
 {
     protected $success;
     protected $message;
