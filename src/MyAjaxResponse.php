@@ -1,4 +1,6 @@
-<?php namespace Vanchelo\AjaxResponse;
+<?php
+
+namespace Vanchelo\AjaxResponse;
 
 /**
  * Почему я использую use и as?
@@ -25,11 +27,11 @@ class MyAjaxResponse extends AjaxResponse
     {
         if (count($arguments) == 1)
         {
-            $this->data[$name] = $arguments[0];
+            $this->body[$name] = $arguments[0];
         }
         else if (count($arguments) > 1)
         {
-            $this->data[$name] = $arguments;
+            $this->body[$name] = $arguments;
         }
 
         return $this;

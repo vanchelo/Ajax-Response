@@ -1,135 +1,46 @@
-<?php namespace Vanchelo\AjaxResponse;
+<?php
 
-use JsonSerializable;
-use Illuminate\Contracts\Support\MessageBag;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
+namespace Vanchelo\AjaxResponse;
 
-class Response implements JsonSerializable, Arrayable, Jsonable
+use Illuminate\Http\JsonResponse;
+
+/**
+ * Class Response
+ *
+ * @package Vanchelo\AjaxResponse
+ *
+ * @method $this data($data, $merge = false)
+ * @method $this message($message)
+ * @method $this error($message = '')
+ * @method $this errors($errors)
+ * @method $this toJson($options)
+ * @method $this toArray()
+ */
+class Response extends JsonResponse
 {
-    protected $success;
-    protected $message;
-    protected $data;
+    protected $body;
 
-    /**
-     * @param string $message
-     * @param bool   $success
-     * @param array  $data
-     */
-    function __construct($message = '', $success = true, array $data = [])
+    public function __construct()
     {
-        $this->data = $data;
-        $this->success = $success;
-        $this->message = $message;
+        $this->body = new Body();
+
+        parent::__construct();
     }
 
-    /**
-     * Set response error status and message
-     *
-     * @param string $message
-     *
-     * @return self
-     */
-    public function error($message = '')
+    public function send()
     {
-        $this->success = false;
-        $this->message($message);
+        $this->setData($this->body);
 
-        return $this;
+        return parent::send();
     }
 
-    /**
-     * Set response errors
-     *
-     * @param mixed $errors
-     *
-     * @return self
-     */
-    public function errors($errors)
+    function __call($name, $arguments)
     {
-        $this->success = false;
-        $this->data['errors'] = $errors instanceof MessageBag
-            ? $errors->toArray()
-            : $errors;
-
-        return $this;
-    }
-
-    /**
-     * Set response message
-     *
-     * @param string $message
-     *
-     * @return self
-     */
-    public function message($message)
-    {
-        $this->message = $message;
-
-        return $this;
-    }
-
-    /**
-     * Set response data
-     *
-     * @param array $data
-     * @param bool $merge
-     *
-     * @return self
-     */
-    public function data(array $data, $merge = false)
-    {
-        if ($merge)
+        if (method_exists($this->body, $name))
         {
-            $this->data = array_merge($this->data, $data);
+            call_user_func_array([$this->body, $name], $arguments);
+
+            return $this;
         }
-        else
-        {
-            $this->data += $data;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return array|mixed
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * Get the instance as an array
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return [
-            'success' => $this->success,
-            'error'   => ! $this->success,
-            'message' => $this->message
-        ] + $this->data;
-    }
-
-    /**
-     * Convert the object to its JSON representation
-     *
-     * @param  int $options
-     *
-     * @return string
-     */
-    public function toJson($options = JSON_UNESCAPED_UNICODE)
-    {
-        return json_encode($this->toArray(), $options);
-    }
-
-    /**
-     * @return string
-     */
-    function __toString()
-    {
-        return $this->toJson();
     }
 }
