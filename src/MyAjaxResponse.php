@@ -1,4 +1,6 @@
-<?php namespace Vanchelo\AjaxResponse;
+<?php
+
+namespace Vanchelo\AjaxResponse;
 
 /**
  * Почему я использую use и as?
@@ -16,20 +18,19 @@ class MyAjaxResponse extends AjaxResponse
      *      ['id' => 11, 'title' => 'Еще одна важная задача']
      * );
      *
-     * @param $name
-     * @param $arguments
+     * @param string $name
+     * @param array  $arguments
      *
      * @return $this
      */
-    function __call($name, $arguments)
+    public function __call($name, $arguments)
     {
-        if (count($arguments) == 1)
-        {
+        if (count($arguments) == 1) {
             $this->data[$name] = $arguments[0];
-        }
-        else if (count($arguments) > 1)
-        {
-            $this->data[$name] = $arguments;
+        } else {
+            if (count($arguments) > 1) {
+                $this->data[$name] = $arguments;
+            }
         }
 
         return $this;

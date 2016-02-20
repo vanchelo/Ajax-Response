@@ -1,14 +1,25 @@
-<?php namespace Vanchelo\AjaxResponse;
+<?php
 
-use JsonSerializable;
-use Illuminate\Support\MessageBag;
+namespace Vanchelo\AjaxResponse;
+
 use Illuminate\Support\Contracts\ArrayableInterface;
 use Illuminate\Support\Contracts\JsonableInterface;
+use Illuminate\Support\MessageBag;
+use JsonSerializable;
 
 class Response implements JsonSerializable, ArrayableInterface, JsonableInterface
 {
+    /**
+     * @var bool
+     */
     protected $success;
+    /**
+     * @var string
+     */
     protected $message;
+    /**
+     * @var array
+     */
     protected $data;
 
     /**
@@ -16,7 +27,7 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
      * @param bool   $success
      * @param array  $data
      */
-    function __construct($message = '', $success = true, array $data = [])
+    public function __construct($message = '', $success = true, array $data = [])
     {
         $this->data = $data;
         $this->success = $success;
@@ -73,18 +84,15 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
      * Set response data
      *
      * @param array $data
-     * @param bool $merge
+     * @param bool  $merge
      *
      * @return self
      */
     public function data(array $data, $merge = false)
     {
-        if ($merge)
-        {
+        if ($merge) {
             $this->data = array_merge($this->data, $data);
-        }
-        else
-        {
+        } else {
             $this->data += $data;
         }
 
@@ -108,8 +116,8 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
     {
         return [
             'success' => $this->success,
-            'error'   => ! $this->success,
-            'message' => $this->message
+            'error' => !$this->success,
+            'message' => $this->message,
         ] + $this->data;
     }
 
@@ -128,7 +136,7 @@ class Response implements JsonSerializable, ArrayableInterface, JsonableInterfac
     /**
      * @return string
      */
-    function __toString()
+    public function __toString()
     {
         return $this->toJson();
     }
