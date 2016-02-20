@@ -18,8 +18,14 @@ use Illuminate\Http\JsonResponse;
  */
 class Response extends JsonResponse
 {
+    /**
+     * @var Body
+     */
     protected $body;
 
+    /**
+     * Response constructor.
+     */
     public function __construct()
     {
         $this->body = new Body();
@@ -27,6 +33,9 @@ class Response extends JsonResponse
         parent::__construct();
     }
 
+    /**
+     * @return mixed
+     */
     public function send()
     {
         $this->setData($this->body);
@@ -34,10 +43,15 @@ class Response extends JsonResponse
         return parent::send();
     }
 
-    function __call($name, $arguments)
+    /**
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return $this
+     */
+    public function __call($name, $arguments)
     {
-        if (method_exists($this->body, $name))
-        {
+        if (method_exists($this->body, $name)) {
             call_user_func_array([$this->body, $name], $arguments);
 
             return $this;
