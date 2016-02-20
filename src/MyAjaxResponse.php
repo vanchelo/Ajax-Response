@@ -23,15 +23,14 @@ class MyAjaxResponse extends AjaxResponse
      *
      * @return $this
      */
-    function __call($name, $arguments)
+    public function __call($name, $arguments)
     {
-        if (count($arguments) == 1)
-        {
+        if (count($arguments) == 1) {
             $this->body[$name] = $arguments[0];
-        }
-        else if (count($arguments) > 1)
-        {
-            $this->body[$name] = $arguments;
+        } else {
+            if (count($arguments) > 1) {
+                $this->body[$name] = $arguments;
+            }
         }
 
         return $this;

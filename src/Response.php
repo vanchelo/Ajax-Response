@@ -34,10 +34,9 @@ class Response extends JsonResponse
         return parent::send();
     }
 
-    function __call($name, $arguments)
+    public function __call($name, $arguments)
     {
-        if (method_exists($this->body, $name))
-        {
+        if (method_exists($this->body, $name)) {
             call_user_func_array([$this->body, $name], $arguments);
 
             return $this;

@@ -25,8 +25,8 @@ class Body implements Arrayable, Jsonable
      * ReponseData constructor.
      *
      * @param string $message
-     * @param bool $success
-     * @param array $data
+     * @param bool   $success
+     * @param array  $data
      */
     public function __construct($message = '', $success = true, array $data = [])
     {
@@ -85,18 +85,15 @@ class Body implements Arrayable, Jsonable
      * Set response data
      *
      * @param array $data
-     * @param bool $merge
+     * @param bool  $merge
      *
      * @return self
      */
     public function data($data, $merge = false)
     {
-        if ($merge)
-        {
+        if ($merge) {
             $this->data = array_merge($this->data, $data);
-        }
-        else
-        {
+        } else {
             $this->data += $data;
         }
 
@@ -112,8 +109,8 @@ class Body implements Arrayable, Jsonable
     {
         return [
             'success' => $this->success,
-            'error'   => ! $this->success,
-            'message' => $this->message
+            'error' => !$this->success,
+            'message' => $this->message,
         ] + $this->data;
     }
 
